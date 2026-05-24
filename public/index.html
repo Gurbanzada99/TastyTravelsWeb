@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasty Travels - Real Merge Game</title>
+    <link rel="stylesheet" href="styles/game_style.css">
+</head>
+<body>
+    <div class="gameContainer">
+        <header class="gameHeader">
+            <div class="coinBox">🪙 <span id="coinCount">2500</span></div>
+            <div class="orderPaper">
+                <p>📋 To-Go Orders</p>
+                <strong>Hədəf: <span id="targetCount">600</span></strong>
+            </div>
+        </header>
+
+        <main class="tableArea">
+            <canvas id="gameCanvas" width="360" height="520"></canvas>
+        </main>
+
+        <footer class="controlBar">
+            <button class="squareGameBtn" id="resetBtn">🔄 Yenidən Başla</button>
+            <button class="squareGameBtn" id="claimBtn" style="background-color: #1dd1a1;">📥 Sifarişi Ver</button>
+        </footer>
+    </div>
+    <script src="scripts/game_engine.js"></script>
+</body>
+</html>
