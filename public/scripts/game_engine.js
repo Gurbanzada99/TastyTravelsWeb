@@ -7,13 +7,22 @@ let currentScore = 0;
 
 let cocktailList = [];
 let currentCocktail = null;
-const colors = ["#ff4757", "#eccc68", "#2ed573", "#1e90ff", "#ffa502", "#9b59b6", "#1dd1a1"];
+
+// Hər səviyyə üçün fərqli kokteyl rəngləri və içindəki meyvə növləri
+const cocktailStyles = [
+    { liquid: "#ff4757", top: "#ff6b81", fruit: "🍒", name: "Çiyələk" },
+    { liquid: "#ffa502", top: "#ff7f50", fruit: "🍊", name: "Portaxal" },
+    { liquid: "#2ed573", top: "#26de81", fruit: "🍏", name: "Mito" },
+    { liquid: "#1e90ff", top: "#70a1ff", fruit: "🍋", name: "Mavi Laguna" },
+    { liquid: "#9b59b6", top: "#a55eea", fruit: "🍇", name: "Üzüm" },
+    { liquid: "#ff6348", top: "#ff7f50", fruit: "🍓", name: "Tropik" }
+];
 
 function createNewCocktail() {
     return {
         x: canvas.width / 2,
-        y: 40,
-        radius: 15 + Math.floor(Math.random() * 10),
+        y: 45,
+        radius: 18 + Math.floor(Math.random() * 8),
         type: Math.floor(Math.random() * 3),
         isDropped: false,
         speedY: 0
@@ -32,7 +41,7 @@ canvas.addEventListener("click", function(event) {
         const rect = canvas.getBoundingClientRect();
         currentCocktail.x = event.clientX - rect.left;
         currentCocktail.isDropped = true;
-        currentCocktail.speedY = 5;
+        currentCocktail.speedY = 6;
     }
 });
 
@@ -41,6 +50,59 @@ function checkLocalCollision(c1, c2) {
     let dy = c2.y - c1.y;
     let distance = Math.sqrt(dx * dx + dy * dy);
     return distance <= (c1.radius + c2.radius);
+}
+
+// Bardağı şık, şüşə effektli və meyvəli çəkən əsas vizual funksiya
+function drawPremiumGlass(x, y, radius, type) {
+    const style = cocktailStyles[type % cocktailStyles.length];
+    
+    ctx.save();
+    
+    // 1. Alt Kölgə (Masada real dursun deyə)
+    ctx.beginPath();
+    ctx.ellipse(x, y + radius, radius * 0.8, 6, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+    ctx.fill();
+    ctx.closePath();
+
+    // 2. Maye Hissəsi (Kokteylin içi)
+    ctx.beginPath();
+    ctx.arc(x, y, radius - 2, 0, Math.PI, false);
+    ctx.lineTo(x - radius + 2, y);
+    ctx.fillStyle = style.liquid;
+    ctx.fill();
+    ctx.closePath();
+
+    // 3. Kokteylin Üst Köpük xətti
+    ctx.beginPath();
+    ctx.ellipse(x, y, radius - 2, 4, 0, 0, Math.PI * 2);
+    ctx.fillStyle = style.top;
+    ctx.fill();
+    ctx.closePath();
+
+    // 4. Şüşə Bardağın Kənarları (Glass effect)
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.stroke();
+    ctx.closePath();
+
+    // 5. Parıltı xətti (Şüşə işığı əks etdirsin)
+    ctx.beginPath();
+    ctx.arc(x, y, radius - 4, Math.PI * 1.2, Math.PI * 1.5);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.stroke();
+    ctx.closePath();
+
+    // 6. İçindəki Meyvə Simgəsi (Eynilə şəkildəki kimi)
+    ctx.font = `${radius * 0.9}px Arial`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(style.fruit, x, y - 4);
+
+    ctx.restore();
 }
 
 function handleGameMerge(index1, index2) {
@@ -58,10 +120,10 @@ function handleGameMerge(index1, index2) {
         cocktailList.push({
             x: midX,
             y: midY,
-            radius: c1.radius + 4,
+            radius: c1.radius + 3,
             type: newType,
             isDropped: true,
-            speedY: 2
+            speedY: 3
         });
         
         currentScore += newType * 50;
@@ -79,21 +141,18 @@ function handleGameMerge(index1, index2) {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Line barrier (Sərhəd xətti)
+    // Masanın üst xətti (Sərhəd)
     ctx.beginPath();
-    ctx.setLineDash([5, 5]);
-    ctx.moveTo(0, 100);
-    ctx.lineTo(canvas.width, 100);
-    ctx.strokeStyle = "rgba(255,255,255,0.6)";
+    ctx.setLineDash([6, 6]);
+    ctx.moveTo(0, 110);
+    ctx.lineTo(canvas.width, 110);
+    ctx.strokeStyle = "rgba(225, 112, 85, 0.5)";
+    ctx.lineWidth = 2;
     ctx.stroke();
     ctx.setLineDash([]);
 
     if (currentCocktail) {
-        ctx.beginPath();
-        ctx.arc(currentCocktail.x, currentCocktail.y, currentCocktail.radius, 0, Math.PI * 2);
-        ctx.fillStyle = colors[currentCocktail.type % colors.length];
-        ctx.fill();
-        ctx.closePath();
+        drawPremiumGlass(currentCocktail.x, currentCocktail.y, currentCocktail.radius, currentCocktail.type);
 
         if (currentCocktail.isDropped) {
             currentCocktail.y += currentCocktail.speedY;
@@ -116,12 +175,7 @@ function gameLoop() {
     }
 
     for (let i = 0; i < cocktailList.length; i++) {
-        let c = cocktailList[i];
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
-        ctx.fillStyle = colors[c.type % colors.length];
-        ctx.fill();
-        ctx.closePath();
+        drawPremiumGlass(cocktailList[i].x, cocktailList[i].y, cocktailList[i].radius, cocktailList[i].type);
     }
 
     for (let i = 0; i < cocktailList.length; i++) {
@@ -144,11 +198,11 @@ document.getElementById("resetBtn").addEventListener("click", function() {
 
 document.getElementById("claimBtn").addEventListener("click", function() {
     if (currentScore >= targetOrderScore) {
-        alert("🎉 Təbriklər! Sifarişi tamamladınız.");
+        alert("🎉 Möhtəşəm! Sifariş tamamlandı.");
         targetOrderScore += 200;
         updateScoreBoard();
     } else {
-        alert("⚠️ Sifarişi tamamlamaq üçün kifayət qədər xal yoxdur! Hazırkı: " + currentScore);
+        alert("⚠️ Hələ sifariş tam deyil! Sizin xalınız: " + currentScore);
     }
 });
 
