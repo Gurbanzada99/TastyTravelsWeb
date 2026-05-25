@@ -1,12 +1,7 @@
-* {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
+/* Arxa fon və konteyner */
 body {
-    background: linear-gradient(135deg, #2ae1f9 0%, #1281e8 50%, #f6d365 100%);
+    background: #2c3e50;
     margin: 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,98 +10,42 @@ body {
 
 .gameContainer {
     width: 400px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 6px solid #fbc531;
-    border-radius: 30px;
+    height: 700px;
+    background-image: url('../assets/beach_table_bg.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 40px;
     padding: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    position: relative;
+    border: 8px solid #5d4037;
 }
 
-.gameHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.coinBox {
-    background: linear-gradient(to right, #fbc531, #f1c40f);
-    padding: 10px 18px;
-    border-radius: 15px;
-    font-weight: bold;
-    font-size: 20px;
-    color: #2c3e50;
-    box-shadow: 0 4px 10px rgba(241, 196, 15, 0.4);
-}
-
-.orderPaper {
-    background: #ffffff;
-    border: 3px dashed #e17055;
-    border-radius: 12px;
-    padding: 6px 15px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.orderPaper p {
-    margin: 0;
-    font-size: 12px;
-    color: #7f8c8d;
-    font-weight: bold;
-}
-
-.orderPaper strong {
-    font-size: 16px;
-    color: #d63031;
-}
-
-.tableArea {
-    background-color: #ffffff;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 4px solid #eccc68;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-}
-
+/* Oyun sahəsi (Canvas) */
 #gameCanvas {
+    width: 100%;
+    height: 380px;
+    margin-top: 140px; /* Masanın üzərinə tam oturması üçün */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     display: block;
-    /* Orijinal şəkildəki qum və çimərlik masası rəngləri */
-    background: linear-gradient(to bottom, #f5f6fa 0%, #ffeaa7 100%);
 }
 
+/* Düymələr */
 .controlBar {
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 15px;
 }
 
 .squareGameBtn {
     flex: 1;
-    height: 55px;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
+    height: 50px;
     border-radius: 15px;
+    border: none;
+    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    transition: all 0.2s ease;
-}
-
-#resetBtn {
-    background: linear-gradient(to bottom, #ff7675, #d63031);
-}
-
-#claimBtn {
-    background: linear-gradient(to bottom, #1dd1a1, #10ac84);
-}
-
-.squareGameBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-}
-
-.squareGameBtn:active {
-    transform: translateY(1px);
+    background: #e67e22;
+    color: white;
 }
