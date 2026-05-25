@@ -8,6 +8,13 @@ let currentScore = 0;
 let cocktailList = [];
 let currentCocktail = null;
 
+// MASANIN SƏRHƏDLƏRİ (Kənara çıxmamaq üçün)
+function getConstrainedX(x, radius) {
+    const leftLimit = 85 + radius; 
+    const rightLimit = canvas.width - 85 - radius;
+    return Math.max(leftLimit, Math.min(x, rightLimit));
+}
+
 const cocktailStyles = [
     { liquid: "#ff4757", top: "#ff6b81", fruit: "🍒" },
     { liquid: "#ffa502", top: "#ff7f50", fruit: "🍊" },
@@ -17,15 +24,14 @@ const cocktailStyles = [
     { liquid: "#ff6348", top: "#ff7f50", fruit: "🍓" }
 ];
 
-// 1. Yeni kokteyl aşağıdan (y = 550) çıxır
 function createNewCocktail() {
     return {
         x: canvas.width / 2,
-        y: 550, 
+        y: 550, // Başlanğıc nöqtəsi (aşağı)
         radius: 22,
         type: Math.floor(Math.random() * 3),
         isLaunched: false,
-        speedY: -5 // Mənfi rəqəm = yuxarı hərəkət
+        speedY: -4 // Yuxarıya doğru hərəkət
     };
 }
 
@@ -36,13 +42,11 @@ function updateScoreBoard() {
     document.getElementById("targetCount").innerText = targetOrderScore;
 }
 
-// 2. Klikləyəndə aşağıdan yuxarıya atılır
 canvas.addEventListener("click", function(event) {
     if (currentCocktail && !currentCocktail.isLaunched) {
         const rect = canvas.getBoundingClientRect();
         let rawX = event.clientX - rect.left;
-        // Sərhədləmə
-        currentCocktail.x = Math.max(60 + currentCocktail.radius, Math.min(rawX, canvas.width - 60 - currentCocktail.radius));
+        currentCocktail.x = getConstrainedX(rawX, currentCocktail.radius);
         currentCocktail.isLaunched = true;
     }
 });
@@ -58,7 +62,7 @@ function drawPremiumGlass(x, y, radius, type) {
     const style = cocktailStyles[type % cocktailStyles.length];
     ctx.save();
     
-    // Alt Kölgə
+    // Kölgə
     ctx.beginPath();
     ctx.ellipse(x, y + radius, radius * 0.8, 6, 0, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
@@ -101,22 +105,22 @@ function handleGameMerge(index1, index2) {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Aşağıdan yuxarı hərəkət məntiqi
     if (currentCocktail) {
         drawPremiumGlass(currentCocktail.x, currentCocktail.y, currentCocktail.radius, currentCocktail.type);
         if (currentCocktail.isLaunched) {
             currentCocktail.y += currentCocktail.speedY;
             
-            // Yuxarı sərhədə (150) çatanda dayanır
-            if (currentCocktail.y <= 150) {
-                currentCocktail.y = 150;
+            // Masanın ortasına çatanda dayanır (y=200)
+            if (currentCocktail.y <= 200) {
+                currentCocktail.y = 200;
                 currentCocktail.isLaunched = false;
                 cocktailList.push(currentCocktail);
                 currentCocktail = createNewCocktail();
             } else {
                 for (let i = 0; i < cocktailList.length; i++) {
                     if (checkLocalCollision(currentCocktail, cocktailList[i])) {
-                        currentCocktail.y = cocktailList[i].y + currentCocktail.radius + 10;
+                        // Üst-üstə yığılma məntiqi
+                        currentCocktail.y = cocktailList[i].y + (currentCocktail.radius * 2);
                         cocktailList.push(currentCocktail);
                         currentCocktail = createNewCocktail();
                         break;
