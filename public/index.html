@@ -1,33 +1,68 @@
+
 <!DOCTYPE html>
 <html lang="az">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasty Travels - Real Merge Game</title>
-    <link rel="stylesheet" href="styles/game_style.css">
+<head><base href="https://d16ilfvy4mv02r.cloudfront.net/workspaces/xKi6DJ9WKMmeAyQUIwVYlvXrF51lUvIs/9b97f8f2-5602-400a-a9f3-1de65f8c7053/files/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Tasty Travels - Drink Shooter</title>
+  <link rel="stylesheet" href="styles/game_style.css">
 </head>
 <body>
-    <div class="gameContainer">
-        <header class="gameHeader">
-            <div class="coinBox">🪙 <span id="coinCount">2500</span></div>
-            <div class="orderPaper">
-                <p>📋 To-Go Orders</p>
-                <strong>Hədəf: <span id="targetCount">600</span></strong>
-            </div>
-        </header>
 
-        <main class="tableArea">
-            <canvas id="gameCanvas" width="360" height="520"></canvas>
-        </main>
+  <div id="wrapper">
 
-        <div class="productZone" id="productZone"></div>
-
-        <footer class="controlBar">
-            <button class="squareGameBtn" id="resetBtn">🔄 Yenidən Başla</button>
-            <button class="squareGameBtn" id="claimBtn" style="background-color: #1dd1a1;">📥 Sifarişi Ver</button>
-        </footer>
+    <!-- HUD (üst panel) -->
+    <div id="hud">
+      <div id="hud-left">
+        <span id="coinDisplay">🪙 4200</span>
+      </div>
+      <div id="hud-center">
+        <span id="levelDisplay">LV 1</span>
+      </div>
+      <div id="hud-right">
+        <span id="scoreDisplay">0 XP</span>
+      </div>
     </div>
-    
-    <script src="scripts/game_engine.js"></script>
+
+    <!-- Oyun kətan -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Alt panel: shooter tray -->
+    <div id="tray">
+      <div id="nextBox">
+        <p>NEXT</p>
+        <canvas id="nextCanvas" width="48" height="48"></canvas>
+      </div>
+      <div id="currentBox">
+        <canvas id="currentCanvas" width="64" height="64"></canvas>
+      </div>
+      <div id="controls">
+        <button id="btnSound" title="Səs">🔊</button>
+        <button id="btnReset" title="Yenidən">🔄</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Game Over overlay -->
+  <div id="overlayGameOver" class="overlay hidden">
+    <div class="overlay-box">
+      <h2>😵 GAME OVER</h2>
+      <p>Score: <strong id="finalScore">0</strong></p>
+      <p>Coins: <strong id="finalCoins">0</strong></p>
+      <button onclick="restartGame()">🔄 Yenidən Oyna</button>
+    </div>
+  </div>
+
+  <!-- Level Up overlay -->
+  <div id="overlayLevelUp" class="overlay hidden">
+    <div class="overlay-box level-box">
+      <h2>🎉 Növbəti Səviyyə!</h2>
+      <p id="levelUpText">Səviyyə 2</p>
+      <button onclick="nextLevel()">▶ Davam Et</button>
+    </div>
+  </div>
+
+  <script src="scripts/game_engine.js"></script>
 </body>
 </html>
